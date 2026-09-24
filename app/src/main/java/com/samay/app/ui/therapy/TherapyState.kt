@@ -25,8 +25,13 @@ data class TherapyUiState(
 
 class TherapyController(
     private val audioPlayer: AudioPlayer,
-    private val durationSeconds: Int = DEFAULT_DURATION_SECONDS
+    requestedDurationSeconds: Int = TherapyController.DEFAULT_DURATION_SECONDS
 ) {
+    private val durationSeconds: Int = requestedDurationSeconds.coerceIn(
+        MIN_DURATION_SECONDS,
+        MAX_DURATION_SECONDS
+    )
+
     private val _state = MutableStateFlow(TherapyUiState(remainingSeconds = durationSeconds))
     val state: StateFlow<TherapyUiState> = _state.asStateFlow()
 
@@ -85,6 +90,8 @@ class TherapyController(
 
     companion object {
         const val DEFAULT_DURATION_SECONDS = 180
+        const val MIN_DURATION_SECONDS = 180
+        const val MAX_DURATION_SECONDS = 300
         const val INHALE_MS = 4000L
         const val HOLD_MS = 4000L
         const val EXHALE_MS = 6000L
