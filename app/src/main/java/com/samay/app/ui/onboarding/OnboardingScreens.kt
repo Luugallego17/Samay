@@ -30,11 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.samay.app.data.content.CalmContent
 import com.samay.app.data.kit.KitType
+import com.samay.app.ui.theme.SamayCream
+import com.samay.app.ui.theme.SamayForest
+import com.samay.app.ui.theme.SamayMuted
 
-// Placeholders de color hasta que P1 entregue los tokens (B2). Mismos valores que MainActivity.
-private val ForestGreen = Color(0xFF1B4332)
-private val Cream = Color(0xFFF7F3EA)
-private val Muted = Color(0xFF6B7280)
 
 @Composable
 private fun StepScaffold(
@@ -49,13 +48,13 @@ private fun StepScaffold(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Cream)
+            .background(SamayCream)
             .padding(24.dp)
     ) {
-        Text(title, color = ForestGreen, fontSize = 26.sp, fontWeight = FontWeight.Medium, fontFamily = FontFamily.Serif)
+        Text(title, color = SamayForest, fontSize = 26.sp, fontWeight = FontWeight.Medium, fontFamily = FontFamily.Serif)
         if (subtitle != null) {
             Spacer(Modifier.height(8.dp))
-            Text(subtitle, color = Muted, fontSize = 15.sp, lineHeight = 20.sp)
+            Text(subtitle, color = SamayMuted, fontSize = 15.sp, lineHeight = 20.sp)
         }
         Spacer(Modifier.height(20.dp))
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) { content() }
@@ -69,7 +68,7 @@ private fun StepScaffold(
                 enabled = canAdvance,
                 modifier = Modifier.weight(1f).height(50.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = ForestGreen, contentColor = Color.White)
+                colors = ButtonDefaults.buttonColors(containerColor = SamayForest, contentColor = Color.White)
             ) { Text(advanceLabel, fontWeight = FontWeight.SemiBold) }
         }
     }
@@ -134,17 +133,17 @@ fun KitContentStep(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)
                     .selectable(selected = selectedId == item.id) { onSelect(item) },
                 colors = CardDefaults.cardColors(
-                    containerColor = if (selectedId == item.id) ForestGreen.copy(alpha = 0.10f) else Color.White
+                    containerColor = if (selectedId == item.id) SamayForest.copy(alpha = 0.10f) else Color.White
                 )
             ) {
                 Column(Modifier.padding(16.dp)) {
-                    Text(item.title, color = ForestGreen, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                    Text(item.title, color = SamayForest, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                     if (item.author.isNotBlank()) {
-                        Text(item.author, color = Muted, fontSize = 12.sp)
+                        Text(item.author, color = SamayMuted, fontSize = 12.sp)
                     }
                     if (!item.text.isNullOrBlank()) {
                         Spacer(Modifier.height(6.dp))
-                        Text(item.text, color = Muted, fontSize = 14.sp, lineHeight = 19.sp)
+                        Text(item.text, color = SamayMuted, fontSize = 14.sp, lineHeight = 19.sp)
                     }
                 }
             }
@@ -196,14 +195,14 @@ private fun OptionRow(text: String, selected: Boolean, onClick: () -> Unit) {
     ) {
         RadioButton(selected = selected, onClick = onClick)
         Spacer(Modifier.height(0.dp))
-        Text(text, color = ForestGreen, fontSize = 16.sp, modifier = Modifier.padding(start = 4.dp))
+        Text(text, color = SamayForest, fontSize = 16.sp, modifier = Modifier.padding(start = 4.dp))
     }
 }
 
 @Composable
 private fun SummaryLine(label: String, value: String) {
     Column(Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-        Text(label, color = Muted, fontSize = 12.sp)
-        Text(value, color = ForestGreen, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+        Text(label, color = SamayMuted, fontSize = 12.sp)
+        Text(value, color = SamayForest, fontSize = 16.sp, fontWeight = FontWeight.Medium)
     }
 }
