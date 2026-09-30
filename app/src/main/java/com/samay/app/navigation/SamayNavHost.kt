@@ -188,5 +188,6 @@ fun SamayNavHost(
         }
         composable(Screen.Crisis.route) {
             PlaceholderScreen("Crisis", "P5")
+        }
     }
 }
