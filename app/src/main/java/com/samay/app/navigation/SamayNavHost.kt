@@ -1,20 +1,15 @@
 package com.samay.app.navigation
 
 import androidx.compose.runtime.Composable
-<<<<<<< HEAD
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-=======
-import androidx.compose.runtime.remember
->>>>>>> origin/feat/p4-therapy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-<<<<<<< HEAD
 import com.samay.app.ui.paywall.PaywallScreen
 import com.samay.app.data.AppDatabase
 import com.samay.app.data.content.PublicDomainContent
@@ -29,13 +24,11 @@ import com.samay.app.ui.onboarding.OnboardingController
 import com.samay.app.ui.onboarding.VoiceStep
 import com.samay.app.ui.onboarding.WelcomeStep
 import kotlinx.coroutines.launch
-=======
 import com.samay.app.data.kit.FakeKitRepository
 import com.samay.app.data.kit.KitRepository
 import com.samay.app.ui.therapy.TherapyEndScreen
 import com.samay.app.ui.therapy.TherapyFeedback
 import com.samay.app.ui.therapy.TherapyRoute
->>>>>>> origin/feat/p4-therapy
 
 @Composable
 fun SamayNavHost(
