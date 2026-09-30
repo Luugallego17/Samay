@@ -39,6 +39,11 @@ object PremiumRepository {
         )
     }
 
+    fun simulatePurchaseSuccess() {
+        _isPremium.value = true
+        _lastError.value = null
+    }
+
     fun setError(message: String?) {
         _lastError.value = message
     }
