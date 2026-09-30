@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
+
         android:name=".SamayApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher_legacy"
@@ -13,6 +14,9 @@
         android:roundIcon="@drawable/ic_launcher_legacy"
         android:supportsRtl="true"
         android:theme="@style/Theme.Samay">
+
+        <meta-data android:name="io.sentry.auto-init" android:value="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
