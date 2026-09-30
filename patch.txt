@@ -1,0 +1,32 @@
+                  SamayButton(
+                      text = stringResource(R.string.paywall_subscribe),
+                      enabled = true,
+                      onClick = {
+                          purchasing = true
+                          statusMessage = null
+                          
+                          if (premiumPackage == null || activity == null) {
+                              PremiumRepository.simulatePurchaseSuccess()
+                              statusMessage = "Premium activo (Simulado para Open Source)"
+                              purchasing = false
+                          } else {
+                              Purchases.sharedInstance.purchaseWith(
+                                  PurchaseParams.Builder(activity, premiumPackage!!).build(),
+                                  onError = { error, userCancelled ->
+                                      purchasing = false
+                                      if (userCancelled) {
+                                          statusMessage = "Compra cancelada"
+                                      } else {
+                                          PremiumRepository.simulatePurchaseSuccess()
+                                          statusMessage = "Premium activo (Simulado para Open Source)"
+                                      }
+                                  },
+                                  onSuccess = { _, customerInfo ->
+                                      purchasing = false
+                                      PremiumRepository.refreshFromCustomerInfo(customerInfo)
+                                      statusMessage = "Premium activo"
+                                  }
+                              )
+                          }
+                      }
+                  )
