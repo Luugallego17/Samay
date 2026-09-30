@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- B3 (#14): copy aprobado. Ver docs/ux/COPY_ES.md -->
+    <string name="copy_disclaimer_short">Samay te acompaña, pero no es un servicio médico ni de emergencia.</string>
+    <string name="copy_disclaimer_long">Samay es una herramienta de acompañamiento para momentos difíciles. No es un servicio médico, no hace diagnósticos y no reemplaza la ayuda de un profesional de salud. Si tu vida o la de otra persona corre peligro, llamá a la línea de ayuda o al número de emergencias de tu país.</string>
+    <string name="copy_ready_offline">Tu kit funciona sin internet. Lo vas a encontrar siempre en el inicio.</string>
+    <string name="copy_crisis_button">Línea de ayuda gratuita</string>
+    <string name="copy_crisis_title">No tenés que pasar por esto solo/a</string>
+    <string name="copy_crisis_body">Hablar con alguien entrenado ayuda. La llamada es gratuita y confidencial.</string>
+    <string name="copy_crisis_free">Esta línea es gratis y siempre va a estar acá, con o sin Premium.</string>
+    <string name="copy_crisis_escalate">Si tu vida corre peligro ahora, llamá al número de emergencias de tu país.</string>
+    <string name="copy_help_title">Estás acompañado/a</string>
+    <string name="copy_help_body">Está bien necesitar más. Elegí lo que te sirva ahora.</string>
+    <string name="copy_help_sms">Hola, estoy pasando un momento difícil. ¿Podés llamarme cuando puedas?</string>
+    <string name="copy_paywall_safety_footer">Modo Terapia, la línea de ayuda y llamar a tu persona son gratis para siempre. Nada de lo que te cuida está detrás de un pago.</string>
+    <string name="copy_empty_contact">Todavía no agregaste a tu persona. Podés hacerlo en Ajustes cuando quieras.</string>
+    <string name="copy_empty_kit">Tu kit todavía está vacío. Mientras tanto, la respiración guiada funciona igual.</string>
+    <string name="copy_empty_audio">No encontramos el audio de tu kit. Seguí respirando, el ejercicio sigue igual.</string>
+    <string name="copy_empty_mic">Sin permiso de micrófono no podemos grabar. Podés seguir y grabar después desde Ajustes.</string>
+    <string name="copy_empty_notifications">Para tener Samay a un toque necesitamos permiso para mostrar una notificación. Podés activarlo en Ajustes.</string>
+    <string name="copy_empty_country">Todavía no tenemos una línea cargada para tu país. Te mostramos un directorio internacional.</string>
+</resources>
