@@ -15,13 +15,11 @@
         android:roundIcon="@drawable/ic_launcher_legacy"
         android:supportsRtl="true"
         android:theme="@style/Theme.Samay">
-
         <!-- F6: Sentry sin DSN crashea al arrancar. Auto-init off hasta tener DSN. -->
         <meta-data
             android:name="io.sentry.auto-init"
             android:value="false"
             tools:replace="android:value" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true"

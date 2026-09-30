@@ -1,15 +1,20 @@
 package com.samay.app.navigation
 
 import androidx.compose.runtime.Composable
+<<<<<<< HEAD
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+=======
+import androidx.compose.runtime.remember
+>>>>>>> origin/feat/p4-therapy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+<<<<<<< HEAD
 import com.samay.app.ui.paywall.PaywallScreen
 import com.samay.app.data.AppDatabase
 import com.samay.app.data.content.PublicDomainContent
@@ -24,6 +29,13 @@ import com.samay.app.ui.onboarding.OnboardingController
 import com.samay.app.ui.onboarding.VoiceStep
 import com.samay.app.ui.onboarding.WelcomeStep
 import kotlinx.coroutines.launch
+=======
+import com.samay.app.data.kit.FakeKitRepository
+import com.samay.app.data.kit.KitRepository
+import com.samay.app.ui.therapy.TherapyEndScreen
+import com.samay.app.ui.therapy.TherapyFeedback
+import com.samay.app.ui.therapy.TherapyRoute
+>>>>>>> origin/feat/p4-therapy
 
 @Composable
 fun SamayNavHost(
@@ -31,6 +43,7 @@ fun SamayNavHost(
     onboardingDone: Boolean = false
 ) {
     val start = if (onboardingDone) Screen.Home.route else Screen.Welcome.route
+    val kitRepository: KitRepository = remember { FakeKitRepository() }
 
     // Estado de onboarding compartido entre las rutas del flujo (P3).
     val onboarding = remember { OnboardingController() }
@@ -103,12 +116,10 @@ fun SamayNavHost(
 
         // Contact y CrisisConfirm los implementa P5 (E1/E2); por ahora placeholders.
         composable(Screen.Contact.route) {
-            PlaceholderScreen("Trusted person", "P5",
-                onNext = { navController.navigate(Screen.CrisisConfirm.route) })
+            PlaceholderScreen("Trusted person", "P5", onNext = { navController.navigate(Screen.CrisisConfirm.route) })
         }
         composable(Screen.CrisisConfirm.route) {
-            PlaceholderScreen("Crisis line / country", "P5",
-                onNext = { navController.navigate(Screen.ConfirmReady.route) })
+            PlaceholderScreen("Crisis line / country", "P5", onNext = { navController.navigate(Screen.ConfirmReady.route) })
         }
 
         composable(Screen.ConfirmReady.route) {
@@ -148,13 +159,27 @@ fun SamayNavHost(
                 secondaryLabel = "Planes / Premium"
             )
         }
+
         composable(Screen.Therapy.route) {
-            PlaceholderScreen("Therapy Mode", "P4",
-                onNext = { navController.navigate(Screen.Crisis.route) },
-                nextLabel = "Go to Crisis")
+            TherapyRoute(
+                kitRepository = kitRepository,
+                onExit = { navController.popBackStack() },
+                onSessionEnd = { navController.navigate(Screen.TherapyEnd.route) }
+            )
         }
+
         composable(Screen.TherapyEnd.route) {
-            PlaceholderScreen("Well done", "P4")
+            TherapyEndScreen(
+                onFeedback = { feedback ->
+                    if (feedback == TherapyFeedback.NEED_MORE_HELP) {
+                        navController.navigate(Screen.Help.route)
+                    } else {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Home.route) { inclusive = false }
+                        }
+                    }
+                }
+            )
         }
         composable(Screen.Help.route) {
             PlaceholderScreen("You're not alone", "P5")
@@ -170,6 +195,5 @@ fun SamayNavHost(
         }
         composable(Screen.Crisis.route) {
             PlaceholderScreen("Crisis", "P5")
-        }
     }
 }
