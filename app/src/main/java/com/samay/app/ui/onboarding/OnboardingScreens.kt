@@ -194,7 +194,7 @@ fun ConfirmStep(
 }
 
 @Composable
-private fun OptionRow(text: String, selected: Boolean, onClick: () -> Unit) {
+fun OptionRow(text: String, selected: Boolean, onClick: () -> Unit) {
     Row(
         Modifier.fillMaxWidth().padding(vertical = 6.dp).selectable(selected = selected, onClick = onClick),
         verticalAlignment = Alignment.CenterVertically

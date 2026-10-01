@@ -133,12 +133,24 @@ fun SamayNavHost(
             )
         }
         composable(Screen.CrisisConfirm.route) {
-            PlaceholderScreen("Crisis line / country", "P5", onNext = { navController.navigate(Screen.ConfirmReady.route) })
+            val currentCountry by prefs.countryCode.collectAsState(initial = null)
+            com.samay.app.ui.crisis.CrisisConfirmStep(
+                selectedCountry = currentCountry,
+                onSelect = { code -> scope.launch { prefs.setCountryCode(code) } },
+                onBack = { navController.popBackStack() },
+                onNext = { navController.navigate(Screen.ConfirmReady.route) }
+            )
         }
 
         composable(Screen.ConfirmReady.route) {
             val s by onboarding.state.collectAsState()
+            val contact by contactRepo.contact.collectAsState(initial = null)
+            val currentCountry by prefs.countryCode.collectAsState(initial = null)
+            val crisisLine = com.samay.app.data.crisis.CrisisLines.getByCode(currentCountry)
+            
             ConfirmStep(
+                contactSummary = contact?.name ?: "No configurada",
+                crisisSummary = "${crisisLine.countryName} - ${crisisLine.number}",
                 kitTitle = s.selectedTitle.ifBlank {
                     when (s.kitType) {
                         KitType.MUSIC -> "Lluvia"
@@ -208,7 +220,11 @@ fun SamayNavHost(
             )
         }
         composable(Screen.Crisis.route) {
-            PlaceholderScreen("Crisis", "P5")
+            val currentCountry by prefs.countryCode.collectAsState(initial = null)
+            com.samay.app.ui.crisis.CrisisScreen(
+                countryCode = currentCountry,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }
