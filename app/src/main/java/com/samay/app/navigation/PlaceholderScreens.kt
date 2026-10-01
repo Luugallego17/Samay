@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -18,10 +18,12 @@ fun PlaceholderScreen(
     title: String,
     owner: String,
     onNext: (() -> Unit)? = null,
-    nextLabel: String = "Next"
+    nextLabel: String = "Next",
+    onSecondary: (() -> Unit)? = null,
+    secondaryLabel: String = ""
 ) {
     Column(
-        modifier = Modifier
+        modifier = androidx.compose.ui.Modifier
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -35,14 +37,19 @@ fun PlaceholderScreen(
         Text(
             text = "TODO $owner",
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = androidx.compose.ui.Modifier.padding(top = 8.dp)
         )
         if (onNext != null) {
             Button(
                 onClick = onNext,
-                modifier = Modifier.padding(top = 24.dp)
+                modifier = androidx.compose.ui.Modifier.padding(top = 24.dp)
             ) {
                 Text(nextLabel)
+            }
+        }
+        if (onSecondary != null) {
+            TextButton(onClick = onSecondary) {
+                Text(secondaryLabel)
             }
         }
     }

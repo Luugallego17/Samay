@@ -113,8 +113,9 @@ dependencies {
     // OneSignal (push) — lo usa P5
     implementation("com.onesignal:OneSignal:5.1.6")
 
-    // Sentry (crash reporting) — cola P2
-    implementation("io.sentry:sentry-android:7.14.0")
+    // Sentry (crash reporting) — cola F6/P2.
+    // ≥7.18.0: .so alineados a 16 KB (emuladores Android 15+ / requisito Play nov 2025).
+    implementation("io.sentry:sentry-android:7.22.4")
 
     // Room (base de datos local: Kit, Contact) — lo usan P3 y P5
     implementation("androidx.room:room-runtime:2.6.1")

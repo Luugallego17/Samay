@@ -7,4 +7,27 @@
     <string name="skeleton_badge">Esqueleto Play · v0.1</string>
     <string name="disclaimer">Samay no es un servicio médico ni de emergencia. Si estás en crisis, contactá una línea de ayuda local.</string>
     <string name="crisis_hint">Línea de crisis (próximamente en esta build)</string>
+
+    <!-- F4 Paywall (#36) -->
+    <string name="paywall_title">Planes</string>
+    <string name="paywall_subtitle">Elegí cómo querés acompañarte. Tu seguridad siempre es gratis.</string>
+    <string name="paywall_free_title">Gratuito · Siempre</string>
+    <string name="paywall_free_price">$0</string>
+    <string name="paywall_free_b1">Modo Terapia completo</string>
+    <string name="paywall_free_b2">Línea de crisis siempre visible</string>
+    <string name="paywall_free_b3">1 kit de calma</string>
+    <string name="paywall_free_b4">1 persona de confianza</string>
+    <string name="paywall_premium_title">Premium</string>
+    <string name="paywall_premium_b1">Kits ilimitados</string>
+    <string name="paywall_premium_b2">Contactos ilimitados</string>
+    <string name="paywall_premium_b3">Aviso automático a tu persona</string>
+    <string name="paywall_premium_b4">Biblioteca ampliada</string>
+    <string name="paywall_promo_link">¿Tenés un código promo?</string>
+    <string name="paywall_subscribe">Suscribirse a Premium</string>
+    <string name="paywall_restore">Restaurar compras</string>
+    <string name="paywall_fetching">Cargando planes…</string>
+    <string name="paywall_purchasing">Procesando compra…</string>
+    <string name="paywall_already_premium">Ya tenés Premium activo</string>
+    <string name="paywall_close">Volver</string>
+    <string name="paywall_safety_footer">El Modo Terapia y la línea de crisis son siempre gratis. Nada relacionado a tu seguridad queda bloqueado por el plan.</string>
 </resources>
