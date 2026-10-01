@@ -21,6 +21,8 @@ if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
 val revenueCatApiKey: String = (localProperties["revenuecat.apiKey"] as String?) ?: ""
+val sentryDsn: String = (localProperties["sentry.dsn"] as String?) ?: ""
+val oneSignalAppId: String = (localProperties["onesignal.appId"] as String?) ?: ""
 
 android {
     namespace = "com.samay.app"
@@ -33,7 +35,9 @@ android {
         versionCode = 1
         versionName = "0.1.0-skeleton"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "REVENUECAT_API_KEY", "\"$revenueCatApiKey\"")
+        buildConfigField("String", "REVENUECAT_API_KEY", "\"${revenueCatApiKey}\"")
+        buildConfigField("String", "SENTRY_DSN", "\"${sentryDsn}\"")
+        buildConfigField("String", "ONESIGNAL_APP_ID", "\"${oneSignalAppId}\"")
     }
 
     signingConfigs {

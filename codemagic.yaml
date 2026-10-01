@@ -1,0 +1,23 @@
+workflows:
+  samay-android-debug:
+    name: Samay Android Debug
+    max_build_duration: 30
+    environment:
+      # vars:
+      #   RC_API_KEY: "tu_llave_rc"
+      #   SENTRY_DSN: "tu_dsn_sentry"
+      java: 17
+    scripts:
+      - name: Set up local.properties
+        script: |
+          echo "revenuecat.apiKey=" >> local.properties
+          echo "sentry.dsn=" >> local.properties
+      - name: Build Android App (Debug)
+        script: |
+          ./gradlew assembleDebug
+    artifacts:
+      - app/build/outputs/apk/debug/app-debug.apk
+    publishing:
+      scripts:
+        - name: Print success
+          script: echo "Build exitoso! Puedes descargar el APK desde Codemagic."

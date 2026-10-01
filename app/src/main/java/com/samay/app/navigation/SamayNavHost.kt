@@ -1,6 +1,8 @@
 package com.samay.app.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -24,8 +26,6 @@ import com.samay.app.ui.onboarding.OnboardingController
 import com.samay.app.ui.onboarding.VoiceStep
 import com.samay.app.ui.onboarding.WelcomeStep
 import kotlinx.coroutines.launch
-import com.samay.app.data.kit.FakeKitRepository
-import com.samay.app.data.kit.KitRepository
 import com.samay.app.ui.therapy.TherapyEndScreen
 import com.samay.app.ui.therapy.TherapyFeedback
 import com.samay.app.ui.therapy.TherapyRoute
@@ -36,21 +36,26 @@ fun SamayNavHost(
     onboardingDone: Boolean = false
 ) {
     val start = if (onboardingDone) Screen.Home.route else Screen.Welcome.route
-    val kitRepository: KitRepository = remember { FakeKitRepository() }
 
     // Estado de onboarding compartido entre las rutas del flujo (P3).
     val onboarding = remember { OnboardingController() }
     val context = LocalContext.current
     val kitRepo = remember { RoomKitRepository(AppDatabase.get(context).kitDao()) }
+    val contactRepo = remember { com.samay.app.data.contact.ContactRepository(com.samay.app.data.AppDatabase.get(context).contactDao()) }
     val prefs = remember { OnboardingPrefs(context) }
     val content = remember { PublicDomainContent.load(context) }
     val scope = rememberCoroutineScope()
+    var showPromoDialog by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+
+    if (showPromoDialog) {
+        com.samay.app.ui.paywall.PromoCodeDialog(onDismiss = { showPromoDialog = false })
+    }
 
     NavHost(navController = navController, startDestination = start) {
 
         // ---------- Onboarding (P3: pantallas reales; Contact/CrisisConfirm = P5) ----------
         composable(Screen.Welcome.route) {
-            WelcomeStep(onStart = { navController.navigate(Screen.LangSelect.route) })
+            WelcomeStep(onStart = { navController.navigate(Screen.LangSelect.route) }, onPromoClick = { showPromoDialog = true })
         }
         composable(Screen.LangSelect.route) {
             val s by onboarding.state.collectAsState()
@@ -102,6 +107,7 @@ fun SamayNavHost(
         }
         composable(Screen.KitVoice.route) {
             VoiceStep(
+                onVoiceRecorded = onboarding::setVoiceFilePath,
                 onBack = { navController.popBackStack() },
                 onNext = { navController.navigate(Screen.Contact.route) }
             )
@@ -109,15 +115,40 @@ fun SamayNavHost(
 
         // Contact y CrisisConfirm los implementa P5 (E1/E2); por ahora placeholders.
         composable(Screen.Contact.route) {
-            PlaceholderScreen("Trusted person", "P5", onNext = { navController.navigate(Screen.CrisisConfirm.route) })
+            val contact by contactRepo.contact.collectAsState(initial = null)
+            com.samay.app.ui.contact.ContactStep(
+                initialName = contact?.name ?: "",
+                initialPhone = contact?.phone ?: "",
+                onBack = { navController.popBackStack() },
+                onSkip = {
+                    scope.launch { contactRepo.clearContact() }
+                    navController.navigate(Screen.CrisisConfirm.route)
+                },
+                onNext = { name, phone ->
+                    scope.launch { contactRepo.saveContact(name, phone) }
+                    navController.navigate(Screen.CrisisConfirm.route)
+                }
+            )
         }
         composable(Screen.CrisisConfirm.route) {
-            PlaceholderScreen("Crisis line / country", "P5", onNext = { navController.navigate(Screen.ConfirmReady.route) })
+            val currentCountry by prefs.countryCode.collectAsState(initial = null)
+            com.samay.app.ui.crisis.CrisisConfirmStep(
+                selectedCountry = currentCountry,
+                onSelect = { code -> scope.launch { prefs.setCountryCode(code) } },
+                onBack = { navController.popBackStack() },
+                onNext = { navController.navigate(Screen.ConfirmReady.route) }
+            )
         }
 
         composable(Screen.ConfirmReady.route) {
             val s by onboarding.state.collectAsState()
+            val contact by contactRepo.contact.collectAsState(initial = null)
+            val currentCountry by prefs.countryCode.collectAsState(initial = null)
+            val crisisLine = com.samay.app.data.crisis.CrisisLines.getByCode(currentCountry)
+            
             ConfirmStep(
+                contactSummary = contact?.name ?: "No configurada",
+                crisisSummary = "${crisisLine.countryName} - ${crisisLine.number}",
                 kitTitle = s.selectedTitle.ifBlank {
                     when (s.kitType) {
                         KitType.MUSIC -> "Lluvia"
@@ -143,19 +174,16 @@ fun SamayNavHost(
 
         // ---------- Main app (dueños de cada pantalla) ----------
         composable(Screen.Home.route) {
-            PlaceholderScreen(
-                title = "Home",
-                owner = "P4",
-                onNext = { navController.navigate(Screen.Therapy.route) },
-                nextLabel = "Therapy Mode",
-                onSecondary = { navController.navigate(Screen.Paywall.route) },
-                secondaryLabel = "Planes / Premium"
+            com.samay.app.ui.home.HomeScreen(
+                onTherapyClick = { navController.navigate(Screen.Therapy.route) },
+                onCrisisClick = { navController.navigate(Screen.Crisis.route) },
+                onSettingsClick = { navController.navigate(Screen.Settings.route) },
+                onPremiumClick = { navController.navigate(Screen.Paywall.route) }
             )
         }
-
         composable(Screen.Therapy.route) {
             TherapyRoute(
-                kitRepository = kitRepository,
+                kitRepository = kitRepo,
                 onExit = { navController.popBackStack() },
                 onSessionEnd = { navController.navigate(Screen.TherapyEnd.route) }
             )
@@ -182,12 +210,16 @@ fun SamayNavHost(
         }
         composable(Screen.Paywall.route) {
             PaywallScreen(
-                onPromoCodeClick = { /* F5 promo codes */ },
+                onPromoCodeClick = { showPromoDialog = true },
                 onClose = { navController.popBackStack() }
             )
         }
         composable(Screen.Crisis.route) {
-            PlaceholderScreen("Crisis", "P5")
+            val currentCountry by prefs.countryCode.collectAsState(initial = null)
+            com.samay.app.ui.crisis.CrisisScreen(
+                countryCode = currentCountry,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

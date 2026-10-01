@@ -31,15 +31,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.samay.app.audio.AudioPlayer
 import com.samay.app.audio.KitAudioResult
+import com.samay.app.data.content.PublicDomainContent
+import com.samay.app.data.kit.Kit
 import com.samay.app.data.kit.KitRepository
+import com.samay.app.data.kit.KitType
 import com.samay.app.ui.theme.SamayButton
 import com.samay.app.ui.theme.SamayCream
 import com.samay.app.ui.theme.SamayForest
 import com.samay.app.ui.theme.SamayMuted
+import kotlinx.coroutines.flow.first
 
 // TODO(P5): reemplazar por el Contact real de Belén apenas esté listo
 private const val TRUSTED_PERSON_NAME = "Ana"
 private const val TRUSTED_PERSON_PHONE = "+59170000000"
+
+// Kit por defecto cuando el usuario todavía no armó ninguno (D3, #24)
+private val DEFAULT_KIT = Kit(
+    id = 0,
+    type = KitType.MUSIC,
+    contentId = "rain",
+    title = "Lluvia"
+)
 
 fun callTrustedPerson(context: Context, phone: String = TRUSTED_PERSON_PHONE) {
     val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone"))
@@ -60,9 +72,9 @@ fun TherapyRoute(
     val uiState by controller.state.collectAsState()
     val activeKit by kitRepository.observeActiveKit().collectAsState(initial = null)
 
-    LaunchedEffect(activeKit) {
-        val kit = activeKit
-        if (kit != null && uiState.sessionState == TherapySessionState.IDLE) {
+    LaunchedEffect(Unit) {
+        val kit = kitRepository.observeActiveKit().first() ?: DEFAULT_KIT
+        if (uiState.sessionState == TherapySessionState.IDLE) {
             controller.start(scope, kit)
         }
     }
@@ -91,6 +103,17 @@ fun TherapyScreen(
     onCallPerson: () -> Unit,
     onExit: () -> Unit
 ) {
+    val context = LocalContext.current
+    // Se carga una sola vez por composición, no en cada recomposición
+    val poems = remember { PublicDomainContent.poems(context) }
+    val poemText = remember(state.kit?.contentId) {
+        if (state.kit?.type == KitType.POEM) {
+            poems.firstOrNull { it.id == state.kit.contentId }?.text
+        } else {
+            null
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -131,6 +154,16 @@ fun TherapyScreen(
                     color = SamayMuted,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 16.dp)
+                )
+            }
+
+            if (poemText != null) {
+                Text(
+                    text = poemText,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = SamayForest,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 16.dp, start = 8.dp, end = 8.dp)
                 )
             }
 

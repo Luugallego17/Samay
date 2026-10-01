@@ -55,12 +55,12 @@
     {
       "id": "rain",
       "title": "Lluvia suave",
-      "author": "—",
+      "author": "OpenGameArt (autor original de \"Rain (loopable)\")",
       "rawResName": "rain",
-      "source": "PENDIENTE: audio CC0 (coordinar con P4/D1). Documentar la fuente aquí.",
+      "source": "https://opengameart.org/content/rain-loopable",
       "license": "CC0",
-      "verified": false,
-      "note": "Colocar el archivo en app/src/main/res/raw/rain.mp3 y confirmar licencia CC0."
+      "verified": true,
+      "note": "Colocado en app/src/main/res/raw/rain.mp3."
     }
   ]
 }
