@@ -81,20 +81,15 @@ fun CrisisScreen(countryCode: String?, onBack: () -> Unit) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Button(
+        com.samay.app.ui.theme.CrisisButton(
+            text = "Llamar ahora",
             onClick = {
                 val intent = Intent(Intent.ACTION_DIAL).apply {
                     data = Uri.parse("tel:${line.number}")
                 }
                 context.startActivity(intent)
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = SamayCrisis),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-        ) {
-            Text("Llamar ahora", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-        }
+            }
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
         Text(
