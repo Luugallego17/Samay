@@ -1,3 +1,11 @@
+# Samay: A place to breathe
+
+📥 **[DOWNLOAD SAMAY APK HERE](releases/Samay_v1.0.apk)**
+
+*For judges: Please download the APK above to test the native offline-first experience directly on your Android device.*
+
+---
+
 # Samay — Plan de ejecución Shipaton 2026 (6 personas)
 
 > App Android de contención emocional. Diferenciador = **kit de calma personalizado** (voz real / poema-versículo dominio público / música ambient) que vive **dentro** de Modo Terapia.
