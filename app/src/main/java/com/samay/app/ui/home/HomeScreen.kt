@@ -53,7 +53,12 @@ fun HomeScreen(
             )
             Row {
                 IconButton(onClick = onPremiumClick) {
-                    Icon(imageVector = Icons.Default.Star, contentDescription = "Premium", tint = SamayForest)
+                                            androidx.compose.material3.Icon(
+                            painter = androidx.compose.ui.res.painterResource(id = com.samay.app.R.drawable.ic_launcher_foreground),
+                            contentDescription = "Logo",
+                            tint = Color.White,
+                            modifier = Modifier.size(72.dp)
+                        )
                 }
                 IconButton(onClick = onSettingsClick) {
                     Icon(imageVector = Icons.Default.Settings, contentDescription = "Ajustes", tint = SamayForest)
@@ -93,11 +98,11 @@ fun HomeScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        // Icono de gota (aproximado)
-                        Text(
-                            text = "💧",
-                            fontSize = 32.sp,
-                            modifier = Modifier.padding(bottom = 8.dp)
+                        androidx.compose.material3.Icon(
+                            painter = androidx.compose.ui.res.painterResource(id = com.samay.app.R.drawable.ic_launcher_foreground),
+                            contentDescription = "Logo",
+                            tint = Color.White,
+                            modifier = Modifier.size(72.dp)
                         )
                         Text(
                             text = "Modo Terapia",

@@ -163,7 +163,7 @@ fun KitContentStep(
 }
 
 @Composable
-fun VoiceStep(onBack: () -> Unit, onNext: () -> Unit) {
+fun VoiceStep(onVoiceRecorded: (String) -> Unit, onBack: () -> Unit, onNext: () -> Unit) {
     var recording by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
     var seconds by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(0) }
     
@@ -180,7 +180,10 @@ fun VoiceStep(onBack: () -> Unit, onNext: () -> Unit) {
         title = "La voz de tu persona",
         subtitle = "Pídele a alguien de confianza que grabe un mensaje calmante.",
         onBack = onBack, 
-        onAdvance = onNext,
+        onAdvance = {
+            onVoiceRecorded("mock_video_path")
+            onNext()
+        },
         canAdvance = seconds > 0
     ) {
         Column(

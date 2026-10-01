@@ -26,8 +26,6 @@ import com.samay.app.ui.onboarding.OnboardingController
 import com.samay.app.ui.onboarding.VoiceStep
 import com.samay.app.ui.onboarding.WelcomeStep
 import kotlinx.coroutines.launch
-import com.samay.app.data.kit.FakeKitRepository
-import com.samay.app.data.kit.KitRepository
 import com.samay.app.ui.therapy.TherapyEndScreen
 import com.samay.app.ui.therapy.TherapyFeedback
 import com.samay.app.ui.therapy.TherapyRoute
@@ -38,7 +36,6 @@ fun SamayNavHost(
     onboardingDone: Boolean = false
 ) {
     val start = if (onboardingDone) Screen.Home.route else Screen.Welcome.route
-    val kitRepository: KitRepository = remember { FakeKitRepository() }
 
     // Estado de onboarding compartido entre las rutas del flujo (P3).
     val onboarding = remember { OnboardingController() }
@@ -110,6 +107,7 @@ fun SamayNavHost(
         }
         composable(Screen.KitVoice.route) {
             VoiceStep(
+                onVoiceRecorded = onboarding::setVoiceFilePath,
                 onBack = { navController.popBackStack() },
                 onNext = { navController.navigate(Screen.Contact.route) }
             )
@@ -185,7 +183,7 @@ fun SamayNavHost(
         }
         composable(Screen.Therapy.route) {
             TherapyRoute(
-                kitRepository = kitRepository,
+                kitRepository = kitRepo,
                 onExit = { navController.popBackStack() },
                 onSessionEnd = { navController.navigate(Screen.TherapyEnd.route) }
             )

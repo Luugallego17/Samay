@@ -39,6 +39,7 @@ import com.samay.app.ui.theme.SamayButton
 import com.samay.app.ui.theme.SamayCream
 import com.samay.app.ui.theme.SamayForest
 import com.samay.app.ui.theme.SamayMuted
+import kotlinx.coroutines.flow.first
 
 // TODO(P5): reemplazar por el Contact real de Belén apenas esté listo
 private const val TRUSTED_PERSON_NAME = "Ana"
@@ -71,9 +72,9 @@ fun TherapyRoute(
     val uiState by controller.state.collectAsState()
     val activeKit by kitRepository.observeActiveKit().collectAsState(initial = null)
 
-    LaunchedEffect(activeKit) {
+    LaunchedEffect(Unit) {
+        val kit = kitRepository.observeActiveKit().first() ?: DEFAULT_KIT
         if (uiState.sessionState == TherapySessionState.IDLE) {
-            val kit = activeKit ?: DEFAULT_KIT
             controller.start(scope, kit)
         }
     }
