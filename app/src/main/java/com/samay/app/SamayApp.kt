@@ -1,9 +1,13 @@
-package com.samay.app
+ï»¿package com.samay.app
 
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.util.Log
 import com.revenuecat.purchases.LogLevel
+import com.onesignal.OneSignal
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
 import com.samay.app.billing.OfferingsRepository
@@ -11,7 +15,7 @@ import io.sentry.android.core.SentryAndroid
 
 /**
  * Arranque de la app (no es una pantalla).
- * La UI está en MainActivity. Acá se configura RevenueCat y Sentry.
+ * La UI estï¿½ en MainActivity. Acï¿½ se configura RevenueCat y Sentry.
  */
 class SamayApp : Application() {
     override fun onCreate() {
@@ -51,4 +55,18 @@ class SamayApp : Application() {
         // F3 (#35): prueba getOfferings al arrancar
         OfferingsRepository.fetchAndLogOfferings()
     }
+
+    private fun configureOneSignal() {
+        val appId = BuildConfig.ONESIGNAL_APP_ID
+        if (appId.isNotBlank()) {
+            OneSignal.initWithContext(this, appId)
+            CoroutineScope(Dispatchers.IO).launch {
+                OneSignal.Notifications.requestPermission(false)
+            }
+            Log.i("SamayApp", "OneSignal inicializado")
+        } else {
+            Log.w("SamayApp", "Sin onesignal.appId en local.properties - OneSignal desactivado")
+        }
+    }
 }
+
