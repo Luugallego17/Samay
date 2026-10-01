@@ -17,6 +17,7 @@ data class OnboardingState(
     val kitType: KitType? = null,
     val selectedContentId: String? = null,
     val selectedTitle: String = "",
+    val voiceFilePath: String? = null,
     val saving: Boolean = false,
     val error: String? = null
 )
@@ -53,6 +54,10 @@ class OnboardingController {
         _state.value = _state.value.copy(selectedContentId = id, selectedTitle = title)
     }
 
+    fun setVoiceFilePath(path: String) {
+        _state.value = _state.value.copy(voiceFilePath = path)
+    }
+
     fun next() {
         val s = _state.value
         val seq = sequence(s.kitType)
@@ -83,7 +88,7 @@ class OnboardingController {
         return when (s.kitType) {
             KitType.POEM -> Kit(type = KitType.POEM, contentId = s.selectedContentId, title = s.selectedTitle)
             KitType.MUSIC -> Kit(type = KitType.MUSIC, contentId = s.selectedContentId ?: "rain", title = s.selectedTitle.ifBlank { "Lluvia" })
-            KitType.VOICE -> Kit(type = KitType.VOICE, voiceFilePath = null, title = s.selectedTitle.ifBlank { "Voz de mi persona" })
+            KitType.VOICE -> Kit(type = KitType.VOICE, voiceFilePath = s.voiceFilePath, title = s.selectedTitle.ifBlank { "Voz de mi persona" })
             null -> Kit(type = KitType.MUSIC, contentId = "rain", title = "Lluvia")
         }
     }

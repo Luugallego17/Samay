@@ -2,7 +2,11 @@ package com.samay.app.audio
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.samay.app.data.kit.Kit
@@ -32,15 +36,37 @@ class AudioPlayer(private val context: Context) {
     }
 
     private fun playFile(path: String?): KitAudioResult {
-        if (path.isNullOrBlank()) return KitAudioResult.MISSING
+        if (path.isNullOrBlank()) {
+            Log.w(TAG, "playFile: path vacío")
+            return KitAudioResult.MISSING
+        }
         val file = File(path)
-        if (!file.exists()) return KitAudioResult.MISSING
+        if (!file.exists()) {
+            Log.w(TAG, "playFile: el archivo no existe: $path")
+            return KitAudioResult.MISSING
+        }
+        Log.d(TAG, "playFile: $path (${file.length()} bytes)")
         return start(uri = Uri.fromFile(file).toString(), loop = false)
     }
 
     private fun start(uri: String, loop: Boolean): KitAudioResult {
         release()
+        val attrs = AudioAttributes.Builder()
+            .setUsage(C.USAGE_MEDIA)
+            .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+            .build()
         exoPlayer = ExoPlayer.Builder(context).build().apply {
+            setAudioAttributes(attrs, true)
+            volume = 1f
+            addListener(object : Player.Listener {
+                override fun onPlayerError(error: PlaybackException) {
+                    Log.e(TAG, "ExoPlayer error: ${error.errorCodeName}", error)
+                }
+
+                override fun onPlaybackStateChanged(state: Int) {
+                    Log.d(TAG, "estado=$state (1=IDLE 2=BUFFERING 3=READY 4=ENDED)")
+                }
+            })
             setMediaItem(MediaItem.fromUri(uri))
             repeatMode = if (loop) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
             prepare()
@@ -55,6 +81,7 @@ class AudioPlayer(private val context: Context) {
     fun release() { exoPlayer?.release(); exoPlayer = null }
 
     companion object {
+        private const val TAG = "AudioPlayer"
         private const val POEM_AMBIENT_DEFAULT = "rain"
     }
 }

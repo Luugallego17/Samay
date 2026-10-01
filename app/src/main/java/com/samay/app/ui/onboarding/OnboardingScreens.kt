@@ -33,6 +33,21 @@ import com.samay.app.data.kit.KitType
 import com.samay.app.ui.theme.SamayCream
 import com.samay.app.ui.theme.SamayForest
 import com.samay.app.ui.theme.SamayMuted
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import com.samay.app.audio.AudioPlayer
+import com.samay.app.audio.RecordingResult
+import com.samay.app.audio.VoiceRecorder
+import com.samay.app.data.kit.Kit
 
 
 @Composable
@@ -152,12 +167,99 @@ fun KitContentStep(
 }
 
 @Composable
-fun VoiceStep(onBack: () -> Unit, onNext: () -> Unit) {
+fun VoiceStep(
+    onVoiceRecorded: (String) -> Unit,
+    onBack: () -> Unit,
+    onNext: () -> Unit
+) {
+    val context = LocalContext.current
+    val recorder = remember { VoiceRecorder(context) }
+    val player = remember { AudioPlayer(context) }
+
+    var hasPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    var isRecording by remember { mutableStateOf(false) }
+    var recordedPath by remember { mutableStateOf<String?>(null) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted -> hasPermission = granted }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            if (isRecording) recorder.cancel()
+            player.release()
+        }
+    }
+
     StepScaffold(
         title = "La voz de tu persona",
-        subtitle = "La grabación se hace acá. (La implementa P4 en D4; por ahora podés continuar.)",
-        onBack = onBack, onAdvance = onNext
-    ) {}
+        subtitle = if (hasPermission)
+            "Grabá un mensaje corto (ej. \"Respirá conmigo\"). Queda solo en tu teléfono, nunca se sube a internet."
+        else
+            "Necesitamos el micrófono para grabar la voz de tu persona de confianza.",
+        onBack = onBack,
+        canAdvance = recordedPath != null,
+        onAdvance = {
+            recordedPath?.let(onVoiceRecorded)
+            onNext()
+        }
+    ) {
+        if (!hasPermission) {
+            Button(onClick = { permissionLauncher.launch(Manifest.permission.RECORD_AUDIO) }) {
+                Text("Dar permiso de micrófono")
+            }
+            Spacer(Modifier.height(12.dp))
+            OutlinedButton(onClick = onNext) {
+                Text("Prefiero usar un poema o música")
+            }
+            return@StepScaffold
+        }
+
+        errorMessage?.let {
+            Text(it, color = Color(0xFFB00020), fontSize = 13.sp)
+            Spacer(Modifier.height(8.dp))
+        }
+
+        if (!isRecording && recordedPath == null) {
+            Button(onClick = {
+                when (recorder.start()) {
+                    RecordingResult.STARTED -> { isRecording = true; errorMessage = null }
+                    RecordingResult.FAILED_BUSY -> errorMessage = "El micrófono está ocupado por otra app."
+                    RecordingResult.FAILED_STORAGE -> errorMessage = "No hay espacio para grabar."
+                    RecordingResult.FAILED_UNKNOWN -> errorMessage = "No se pudo empezar a grabar, probá de nuevo."
+                }
+            }) { Text("● Grabar") }
+        }
+
+        if (isRecording) {
+            Text("Grabando…", color = SamayForest, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(12.dp))
+            Button(onClick = {
+                val path = recorder.stop()
+                isRecording = false
+                if (path != null) recordedPath = path else errorMessage = "No se pudo guardar la grabación."
+            }) { Text("■ Listo") }
+        }
+
+        recordedPath?.let { path ->
+            Spacer(Modifier.height(16.dp))
+            Text("Grabación lista ✓", color = SamayForest)
+            Spacer(Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedButton(onClick = { player.playKit(Kit(type = KitType.VOICE, voiceFilePath = path)) }) {
+                    Text("▶ Escuchar")
+                }
+                OutlinedButton(onClick = { recordedPath = null; errorMessage = null }) {
+                    Text("Grabar de nuevo")
+                }
+            }
+        }
+    }
 }
 
 @Composable
