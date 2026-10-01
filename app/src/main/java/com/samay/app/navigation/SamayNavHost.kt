@@ -1,6 +1,8 @@
 package com.samay.app.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -45,12 +47,17 @@ fun SamayNavHost(
     val prefs = remember { OnboardingPrefs(context) }
     val content = remember { PublicDomainContent.load(context) }
     val scope = rememberCoroutineScope()
+    var showPromoDialog by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+
+    if (showPromoDialog) {
+        com.samay.app.ui.paywall.PromoCodeDialog(onDismiss = { showPromoDialog = false })
+    }
 
     NavHost(navController = navController, startDestination = start) {
 
         // ---------- Onboarding (P3: pantallas reales; Contact/CrisisConfirm = P5) ----------
         composable(Screen.Welcome.route) {
-            WelcomeStep(onStart = { navController.navigate(Screen.LangSelect.route) })
+            WelcomeStep(onStart = { navController.navigate(Screen.LangSelect.route) }, onPromoClick = { showPromoDialog = true })
         }
         composable(Screen.LangSelect.route) {
             val s by onboarding.state.collectAsState()
@@ -182,7 +189,7 @@ fun SamayNavHost(
         }
         composable(Screen.Paywall.route) {
             PaywallScreen(
-                onPromoCodeClick = { /* F5 promo codes */ },
+                onPromoCodeClick = { showPromoDialog = true },
                 onClose = { navController.popBackStack() }
             )
         }
