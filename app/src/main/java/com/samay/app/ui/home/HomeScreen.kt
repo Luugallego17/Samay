@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
+
+import com.samay.app.ui.theme.SamayMuted
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -62,34 +64,58 @@ fun HomeScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         // CTA Gigante: Modo Terapia
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f) // Círculo perfecto
-                .clip(CircleShape)
-                .background(SamaySage)
-                .clickable { onTherapyClick() },
-            contentAlignment = Alignment.Center
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
         ) {
+            Text(
+                text = "¿Necesitás un momento?",
+                color = SamayForest,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(24.dp))
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.85f)
-                    .aspectRatio(1f)
+                    .fillMaxWidth(0.9f)
+                    .aspectRatio(1f) // Círculo perfecto
                     .clip(CircleShape)
-                    .background(SamayForest),
+                    .background(SamaySage.copy(alpha = 0.5f))
+                    .clickable { onTherapyClick() },
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Modo\nTerapia",
-                    color = Color.White,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Black,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    lineHeight = 36.sp
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.75f)
+                        .aspectRatio(1f)
+                        .clip(CircleShape)
+                        .background(SamayForest),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        // Icono de gota (aproximado)
+                        Text(
+                            text = "💧",
+                            fontSize = 32.sp,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            text = "Modo Terapia",
+                            color = Color.White,
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+                    }
+                }
             }
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Respiración guiada + tu kit de calma",
+                color = SamayMuted,
+                fontSize = 14.sp
+            )
         }
-
         Spacer(modifier = Modifier.weight(1f))
 
         // Card Línea de Crisis
