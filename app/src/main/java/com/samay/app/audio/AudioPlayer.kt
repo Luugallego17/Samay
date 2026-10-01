@@ -16,7 +16,10 @@ class AudioPlayer(private val context: Context) {
     private var exoPlayer: ExoPlayer? = null
 
     fun playKit(kit: Kit): KitAudioResult = when (kit.type) {
-        KitType.POEM -> KitAudioResult.NOT_APPLICABLE
+        // TODO(P4): hardcodeado por ahora — cuando el equipo defina cómo elegir el
+        // ambiente de un poema (depende de UI en onboarding, coordinar con Luna),
+        // reemplazar POEMA_AMBIENT_DEFAULT por kit.ambientContentId o similar.
+        KitType.POEM -> playRaw(POEM_AMBIENT_DEFAULT)
         KitType.MUSIC -> playRaw(kit.contentId)
         KitType.VOICE -> playFile(kit.voiceFilePath)
     }
@@ -50,4 +53,8 @@ class AudioPlayer(private val context: Context) {
     fun resume() { exoPlayer?.play() }
     fun stop() { exoPlayer?.stop() }
     fun release() { exoPlayer?.release(); exoPlayer = null }
+
+    companion object {
+        private const val POEM_AMBIENT_DEFAULT = "rain"
+    }
 }
