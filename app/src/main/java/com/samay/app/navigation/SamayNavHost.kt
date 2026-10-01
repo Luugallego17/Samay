@@ -176,16 +176,13 @@ fun SamayNavHost(
 
         // ---------- Main app (dueños de cada pantalla) ----------
         composable(Screen.Home.route) {
-            PlaceholderScreen(
-                title = "Home",
-                owner = "P4",
-                onNext = { navController.navigate(Screen.Therapy.route) },
-                nextLabel = "Therapy Mode",
-                onSecondary = { navController.navigate(Screen.Paywall.route) },
-                secondaryLabel = "Planes / Premium"
+            com.samay.app.ui.home.HomeScreen(
+                onTherapyClick = { navController.navigate(Screen.Therapy.route) },
+                onCrisisClick = { navController.navigate(Screen.Crisis.route) },
+                onSettingsClick = { navController.navigate(Screen.Settings.route) },
+                onPremiumClick = { navController.navigate(Screen.Paywall.route) }
             )
         }
-
         composable(Screen.Therapy.route) {
             TherapyRoute(
                 kitRepository = kitRepository,
