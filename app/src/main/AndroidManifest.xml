@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -14,9 +15,11 @@
         android:roundIcon="@drawable/ic_launcher_legacy"
         android:supportsRtl="true"
         android:theme="@style/Theme.Samay">
-
-        <meta-data android:name="io.sentry.auto-init" android:value="false" />
-
+        <!-- F6: Sentry sin DSN crashea al arrancar. Auto-init off hasta tener DSN. -->
+        <meta-data
+            android:name="io.sentry.auto-init"
+            android:value="false"
+            tools:replace="android:value" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
