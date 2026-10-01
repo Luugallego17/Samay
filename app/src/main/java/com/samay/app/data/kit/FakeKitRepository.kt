@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
  */
 class FakeKitRepository(
     seed: List<Kit> = listOf(
-        Kit(id = 1, type = KitType.MUSIC, contentId = "rain", title = "Lluvia")
+        Kit(id = 1, type = KitType.POEM, contentId = "salmo23", title = "Salmo 23")
     )
 ) : KitRepository {
 
