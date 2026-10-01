@@ -20,6 +20,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,13 +76,18 @@ private fun StepScaffold(
 }
 
 @Composable
-fun WelcomeStep(onStart: () -> Unit) {
+fun WelcomeStep(onStart: () -> Unit, onPromoClick: () -> Unit = {}) {
     StepScaffold(
         title = "Un lugar para respirar",
         subtitle = "Tu kit personal para los momentos difÃ­ciles. Sin buscar, sin pensar: solo accionar.",
         advanceLabel = "Empezar",
         onAdvance = onStart
-    ) {}
+    ) {
+        androidx.compose.foundation.layout.Spacer(modifier = androidx.compose.ui.Modifier.height(24.dp))
+        TextButton(onClick = onPromoClick, modifier = androidx.compose.ui.Modifier.fillMaxWidth()) {
+            Text("¿Tenés un código de acceso?", color = com.samay.app.ui.theme.SamayForest)
+        }
+    }
 }
 
 @Composable
