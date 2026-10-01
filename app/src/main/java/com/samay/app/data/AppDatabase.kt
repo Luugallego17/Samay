@@ -9,23 +9,19 @@ import androidx.room.TypeConverters
 import com.samay.app.data.kit.Kit
 import com.samay.app.data.kit.KitDao
 import com.samay.app.data.kit.KitType
+import com.samay.app.data.contact.Contact
+import com.samay.app.data.contact.ContactDao
 
-/**
- * Base de datos local de Samay.
- *
- * ⚠️ COMPARTIDA con P5: cuando Belen agregue la entity `Contact` + `ContactDao` (E1),
- * súmalos al array `entities`, agregá `abstract fun contactDao()` y **subí la versión**
- * a 2 (con migración o fallbackToDestructiveMigration en debug). Coordinar antes de tocar.
- */
 @Database(
-    entities = [Kit::class],
-    version = 1,
+    entities = [Kit::class, Contact::class],
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun kitDao(): KitDao
+    abstract fun contactDao(): ContactDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -36,12 +32,13 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "samay.db"
-                ).build().also { INSTANCE = it }
+                )
+                .fallbackToDestructiveMigration() // Dev only, drop tables if version changes
+                .build().also { INSTANCE = it }
             }
     }
 }
 
-/** Convierte el enum KitType para Room. */
 class Converters {
     @TypeConverter fun fromKitType(value: KitType): String = value.name
     @TypeConverter fun toKitType(value: String): KitType = KitType.valueOf(value)

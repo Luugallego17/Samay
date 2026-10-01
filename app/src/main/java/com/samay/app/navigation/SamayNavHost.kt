@@ -44,6 +44,7 @@ fun SamayNavHost(
     val onboarding = remember { OnboardingController() }
     val context = LocalContext.current
     val kitRepo = remember { RoomKitRepository(AppDatabase.get(context).kitDao()) }
+    val contactRepo = remember { com.samay.app.data.contact.ContactRepository(com.samay.app.data.AppDatabase.get(context).contactDao()) }
     val prefs = remember { OnboardingPrefs(context) }
     val content = remember { PublicDomainContent.load(context) }
     val scope = rememberCoroutineScope()
@@ -116,7 +117,20 @@ fun SamayNavHost(
 
         // Contact y CrisisConfirm los implementa P5 (E1/E2); por ahora placeholders.
         composable(Screen.Contact.route) {
-            PlaceholderScreen("Trusted person", "P5", onNext = { navController.navigate(Screen.CrisisConfirm.route) })
+            val contact by contactRepo.contact.collectAsState(initial = null)
+            com.samay.app.ui.contact.ContactStep(
+                initialName = contact?.name ?: "",
+                initialPhone = contact?.phone ?: "",
+                onBack = { navController.popBackStack() },
+                onSkip = {
+                    scope.launch { contactRepo.clearContact() }
+                    navController.navigate(Screen.CrisisConfirm.route)
+                },
+                onNext = { name, phone ->
+                    scope.launch { contactRepo.saveContact(name, phone) }
+                    navController.navigate(Screen.CrisisConfirm.route)
+                }
+            )
         }
         composable(Screen.CrisisConfirm.route) {
             PlaceholderScreen("Crisis line / country", "P5", onNext = { navController.navigate(Screen.ConfirmReady.route) })

@@ -37,7 +37,7 @@ import com.samay.app.ui.theme.SamayMuted
 
 
 @Composable
-private fun StepScaffold(
+fun StepScaffold(
     title: String,
     subtitle: String? = null,
     canAdvance: Boolean = true,
